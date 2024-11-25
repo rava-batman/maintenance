@@ -1,74 +1,114 @@
-// 2. Write vs WriteLine
+// 5. Single inheritance demo
 
 using System;
 
+class Animal
+{
+    public virtual void MakeSound() { Console.WriteLine("All animals can make sounds"); }
+}
+
+class Dog : Animal
+{
+    public override void MakeSound() { Console.WriteLine("Dog barks"); }
+}
+
 class Program
 {
-    static void Main()
+    static void Main(string[] args)
     {
-        Console.Write("Hi!"); 
-        Console.Write(" I am Timmy!"); 
-        Console.Write(" And this is all in one Line.")
+        Dog droopy = new Dog();
+        droopy.MakeSound();
+    }
+}
 
-        Console.WriteLine(); // Next line
+// Output: Dog barks
 
-        Console.Write("This is another Line after WriteLine.");
 
+
+
+// 6. Circle circle thing
+using System;
+
+abstract class Shape
+{
+    public abstract double CalculateArea();
+}
+
+class Circle : Shape
+{
+    public double Radius { get; private set; }
+    public Circle(double radius) { Radius = radius; }
+    public override double CalculateArea() => Math.PI * Radius * Radius;
+}
+
+class Rectangle : Shape
+{
+    public double Length { get; private set; }
+    public double Width { get; private set; }
+    public Rectangle(double length, double width)
+    {
+        Length = length;
+        Width = width;
+    }
+    public override double CalculateArea() => Length * Width;
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Shape circle = new Circle(5);
+        Shape rectangle = new Rectangle(4, 7);
+
+        Console.WriteLine("Circle Area: " + circle.CalculateArea());
+        Console.WriteLine("Rectangle Area: " + rectangle.CalculateArea());
+    }
+}
+
+/*
+    OUTPUT: 
+            Circle Area: 78.53981633974483
+            Rectangle Area: 28
+*/
+
+
+// 7. SchoolContext framework
+using System;
+
+
+// a. this the Student class
+class Student
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public int Age { get; set; }
+}
+
+// b. DbContext
+class SchoolContext : DbContext
+{
+    public DbSet<Student> Students { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
         /*
-            Output:
-            Hi! I am Timmy! And this is all in one Line.
-            This is another Line after WriteLine.
-
-            explanation: "Write" displays text inline and "WriteLine" moves them to another line
+            This is a connnection to my postgreSQL but if you try it, replace the server string with urs
+            optionsBuilder.UseSqlServer("ASNKJFennvleNFlea");
         */
     }
 }
 
-
-
-// 3. Try catch and blocks
-using System;
-
+// c. Add student
 class Program
 {
-    static void Main()
+    static void Main(string[] args)
     {
-        try {
-            Console.Write("Type in your Monroe ID: ");
-            int monroe_id = int.Parse(Console.ReadLine());
-
-            Console.WriteLine($"ID entered: {monroe_id}");
+        using (var context = new SchoolContext())
+        {
+            var student = new Student { Name = "Timmy", Age = 22 };
+            context.Students.Add(student);
+            context.SaveChanges();
         }
-        catch (FormatException error) {
-            Console.WriteLine("Monroe ID must be only numbers. Please try again.");
-        }
-        finally {
-            Console.WriteLine("Program ended");
-        }
-        
-        /*
-            ----- CASE 1 -----
-            User Input:
-                Type in your Monroe ID: Temajio Boodle
-
-            Program Output:
-                Monroe ID must be only numbers. Please try again.
-                Program ended
-
-            ----- CASE 2 ------
-            User Input:
-                Type in your Monroe ID: 123
-
-            Program Output:
-                ID entered: 123
-                Program ended
-
-            Explanation:
-                - in the first case the user entering a string instead of a number, and since the program expect a number instead
-                it will throw the error message written then execute the code inside finally
-                - in the second case, the use input was in a correct format so it kept executing the rest of the code inside try, then went to the code 
-                inside of finally
-                - In BOTH cases, the code wrapped inside finally is always executed at the end of the program
-        */  
     }
 }
+
