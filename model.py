@@ -1,4 +1,3 @@
-import streamlit as st
 from datetime import datetime
 
 class MaintenanceRequest:
@@ -20,5 +19,3 @@ class MaintenanceRequest:
         if self.scheduled_time:
             return f"{self.status} at {self.scheduled_time.strftime('%I:%M %p')}"
         return self.status
-
-maintenance_requests = {}
